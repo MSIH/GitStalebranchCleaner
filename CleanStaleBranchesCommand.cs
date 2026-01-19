@@ -89,15 +89,116 @@ namespace GitStalebranchCleaner
         private void Execute(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.GetType().FullName);
-            string title = "CleanStaleBranchesCommand";
 
-            // Show a message box to prove we were here
+            try
+            {
+                // Get the solution directory
+                var dte = Package.GetGlobalService(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
+                if (dte?.Solution == null || string.IsNullOrEmpty(dte.Solution.FullName))
+                {
+                    ShowMessage("No solution is currently open.", OLEMSGICON.OLEMSGICON_WARNING);
+                    return;
+                }
+
+                string solutionDir = System.IO.Path.GetDirectoryName(dte.Solution.FullName);
+
+                // Execute the Git commands
+                CleanStaleBranches(solutionDir);
+            }
+            catch (Exception ex)
+            {
+                ShowMessage($"Error cleaning stale branches: {ex.Message}", OLEMSGICON.OLEMSGICON_CRITICAL);
+            }
+        }
+
+        private void CleanStaleBranches(string repoPath)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            var output = new System.Text.StringBuilder();
+
+            // First, prune remote references
+            output.AppendLine("Pruning remote references...");
+            ExecuteGitCommand(repoPath, "fetch --prune", output);
+
+            // Get list of stale branches
+            string branchOutput = ExecuteGitCommand(repoPath, "branch -vv");
+            var staleBranches = new System.Collections.Generic.List<string>();
+
+            using (var reader = new System.IO.StringReader(branchOutput))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    if (line.Contains(": gone]"))
+                    {
+                        // Extract branch name (first token after trimming)
+                        string branchName = line.Trim().Split(new[] { ' ' }, System.StringSplitOptions.RemoveEmptyEntries)[0];
+                        if (branchName.StartsWith("*"))
+                            branchName = line.Trim().Split(new[] { ' ' }, System.StringSplitOptions.RemoveEmptyEntries)[1];
+
+                        staleBranches.Add(branchName);
+                    }
+                }
+            }
+
+            if (staleBranches.Count == 0)
+            {
+                output.AppendLine("\nNo stale branches found.");
+                ShowMessage(output.ToString(), OLEMSGICON.OLEMSGICON_INFO);
+                return;
+            }
+
+            output.AppendLine($"\nFound {staleBranches.Count} stale branch(es) :");
+
+            // Delete each stale branch
+            foreach (var branch in staleBranches)
+            {
+                output.AppendLine($"  Deleting: {branch}");
+                ExecuteGitCommand(repoPath, $"branch -D {branch}", output);
+            }
+
+            output.AppendLine("\nCleanup complete!");
+            ShowMessage(output.ToString(), OLEMSGICON.OLEMSGICON_INFO);
+        }
+
+        private string ExecuteGitCommand(string workingDirectory, string arguments, System.Text.StringBuilder output = null)
+        {
+            var processInfo = new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = "git",
+                Arguments = arguments,
+                WorkingDirectory = workingDirectory,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using (var process = System.Diagnostics.Process.Start(processInfo))
+            {
+                string result = process.StandardOutput.ReadToEnd();
+                string error = process.StandardError.ReadToEnd();
+                process.WaitForExit();
+
+                if (!string.IsNullOrEmpty(error) && output != null)
+                {
+                    output.AppendLine($"Error: {error}");
+                }
+
+                return result;
+            }
+        }
+
+        private void ShowMessage(string message, OLEMSGICON icon)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             VsShellUtilities.ShowMessageBox(
                 this.package,
                 message,
-                title,
-                OLEMSGICON.OLEMSGICON_INFO,
+                "Clean Stale Branches",
+                icon,
                 OLEMSGBUTTON.OLEMSGBUTTON_OK,
                 OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
         }

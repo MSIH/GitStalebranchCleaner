@@ -4,7 +4,7 @@
     <Platform Name="arm64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="GitStalebranchCleaner.csproj">
+  <Project Path="GitStalebranchCleaner.csproj" Id="574a4bd9-23e3-44ef-9a7a-366b889cf6ba">
     <Platform Solution="*|arm64" Project="arm64" />
     <Platform Solution="*|x86" Project="x86" />
   </Project>

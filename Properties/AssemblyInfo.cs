@@ -5,10 +5,10 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("GitStalebranchCleaner")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("GitStaleBranchCleaner")]
+[assembly: AssemblyDescription("Deletes local branchs if no longer exists on remote")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("MSIH LLC")]
 [assembly: AssemblyProduct("GitStalebranchCleaner")]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]

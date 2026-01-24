@@ -16,13 +16,10 @@
 				<Parent guid="guidSHLMainMenu" id="IDM_VS_CSCD_WINDOWS"/>
 			</Group>
 
-			<Group guid="guidGitStalebranchCleanerPackageCmdSet" id="MyMenuGroup3" priority="0x0600">
-				<Parent guid="guidSHLMainMenu" id="IDM_VS_TOOL_STANDARD"/>
-			</Group>
-
 			<Group guid="guidGitStalebranchCleanerPackageCmdSet" id="MyMenuGroup5" priority="0x0600">
 				<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJWIN"/>
 			</Group>
+
 		</Groups>
 
 		<Buttons>
@@ -30,10 +27,10 @@
 				<Parent guid="guidGitStalebranchCleanerPackageCmdSet" id="MyMenuGroup" />
 				<Icon guid="guidImages" id="bmpPic1" />
 				<Strings>
-					<ButtonText>Clean Stale Git Branches</ButtonText>
-					<ToolTipText>Remove local branches whose remote tracking branch is gone</ToolTipText>
+					<ButtonText>Clean Stale Git Branches</ButtonText>			
 				</Strings>
 			</Button>
+
 		</Buttons>
 
 		<Bitmaps>
@@ -47,7 +44,6 @@
 		<GuidSymbol name="guidGitStalebranchCleanerPackageCmdSet" value="{ae43e998-b926-407c-8595-2607a254ebc3}">
 			<IDSymbol name="MyMenuGroup" value="0x1020" />
 			<IDSymbol name="MyMenuGroup2" value="0x1021" />
-			<IDSymbol name="MyMenuGroup3" value="0x1022" />
 			<IDSymbol name="MyMenuGroup5" value="0x1023" />
 			<IDSymbol name="CleanStaleBranchesCommandId" value="0x0100" />
 		</GuidSymbol>

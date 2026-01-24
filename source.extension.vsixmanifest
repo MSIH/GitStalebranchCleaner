@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="GitStalebranchCleaner.bdaeb4a7-0cf5-44a2-b6de-05b6edd60ae6" Version="1.0" Language="en-US" Publisher="MSIH LLC" />
+    <Identity Id="GitStalebranchCleaner.bdaeb4a7-0cf5-44a2-b6de-05b6edd60ae6" Version="26.1.423" Language="en-US" Publisher="MSIH LLC" />
     <DisplayName>GitStalebranchCleaner</DisplayName>
     <Description>Deletes local Git branches that no longer exists on remote to keep your local repository clean.</Description>
   </Metadata>
